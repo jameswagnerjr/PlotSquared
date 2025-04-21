@@ -1,28 +1,35 @@
-name: build
+name: Continuous Release
+
 on:
   push:
     branches:
       - main
+
 jobs:
-  build:
+  build-and-release:
     runs-on: ubuntu-latest
+
     steps:
-      - name: Checkout Repository
+      - name: Checkout
         uses: actions/checkout@v4
-      - name: Validate Gradle Wrapper
-        uses: gradle/actions/wrapper-validation@v4
+
       - name: Setup Java
         uses: actions/setup-java@v4
         with:
           distribution: temurin
           java-version: 21
-      - name: Clean Build
+
+      - name: Grant Permission to Gradle
+        run: chmod +x ./gradlew
+
+      - name: Build Project
         run: ./gradlew clean build
-      - name: Create GitHub Release
+      - name: Create or Update GitHub Release (Continuous)
         uses: softprops/action-gh-release@v1
         with:
-          name: Release ${{ github.ref_name }}
-          tag_name: ${{ github.ref_name }}
-          files: plotsquared-bukkit/build/libs/plotsquared-bukkit-*.jar
+          name: Continuous Build
+          tag_name: continuous
+          files: plotsquared-bukkit/build/libs/*.jar
+          prerelease: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
