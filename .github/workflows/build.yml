@@ -24,14 +24,12 @@ jobs:
 
       - name: Build Project
         run: ./gradlew clean build
-      - name: Debug Artifact Path
-        run: find . -name "*.jar"
       - name: Create or Update GitHub Release (Continuous)
         uses: softprops/action-gh-release@v1
         with:
           name: Continuous Build
           tag_name: continuous
-          files: plotsquared-bukkit/build/libs/*.jar
+          files: /Bukkit/build/libs/*.jar
           prerelease: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
